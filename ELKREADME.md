@@ -34,14 +34,15 @@ Integrating an ELK server allows users to easily monitor the vulnerable VMs for 
 - Metricbeat is an easy to use, efficient and reliable metric shipper for monitoring your system and the processes running on it. 
 
 The configuration details of each machine may be found below.
-_Note: Use the [Markdown Table Generator](http://www.tablesgenerator.com/markdown_tables) to add/remove values from the table_.
+[Markdown Table Generator](http://www.tablesgenerator.com/markdown_tables)
 
 | Name     | Function | IP Address | Operating System |
 |----------|----------|------------|------------------|
-| Jump Box | Gateway  | 10.0.0.1   | Linux            |
-| TODO     |          |            |                  |
-| TODO     |          |            |                  |
-| TODO     |          |            |                  |
+| Jump Box | Gateway  | 10.1.0.6   | Linux            |
+|ElkServer |  Config  | 10.2.0.4   | Linux            |
+| Web-1    |   DVWA   | 10.1.0.4   | Linux            |
+| Web-2    |   DVWA   | 10.1.0.5   | Linux            |
+| Web-3    |   DVWA   | 10.1.0.7   | Linux            |
 
 ### Access Policies
 
@@ -58,48 +59,51 @@ A summary of the access policies in place can be found in the table below.
 
 | Name     | Publicly Accessible | Allowed IP Addresses |
 |----------|---------------------|----------------------|
-| Jump Box | Yes/No              | 10.0.0.1 10.0.0.2    |
-|          |                     |                      |
-|          |                     |                      |
+| Jump Box | Yes - SSH only      | 10.1.0.6, MyPublicIP |
+|ElkServer | No                  | HTTP(5601) MyIP only |
+| Web-*    | No                  | HTTP(80) MyIP Only   |
+| Load Bal | No                  |HTTP(80) -TrafficToWeb|       
 
 ### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because automation provides efficiency, and less chance of a human error or mess up.
 
 The playbook implements the following tasks:
-- _TODO: In 3-5 bullets, explain the steps of the ELK installation play. E.g., install Docker; download image; etc._
-- install docker.io
-- Install python3-pip
+
+- Install Docker.io
+- Install Python3-pip
+- Configures Docker to use more memory
 - Install ELK container
 - Enables Docker to run at start
-- Configure Docker to use more memory
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
-![TODO: Update the path with the name of your screenshot of docker ps output](Images/sudodockerps.png)
+[](sudodockerps.png)
 
 ### Target Machines & Beats
 This ELK server is configured to monitor the following machines: Web-1, Web-2, and Web-3
-- _TODO: List the IP addresses of the machines you are monitoring_
+- Web-1 IP:10.1.0.4
+- Web-2 IP:10.1.0.5
+- Web-3 IP:10.1.0.7
 
-We have installed the following Beats on these machines: Filebeats, Metricbeats
-- _TODO: Specify which Beats you successfully installed_
+We have installed the following Beats on these machines: 
+- Filebeat
+- Metricbeat
 
 These Beats allow us to collect the following information from each machine:
-- _TODO: In 1-2 sentences, explain what kind of data each beat collects, and provide 1 example of what you expect to see. E.g., `Winlogbeat` collects Windows logs, which we use to track user logon events, etc._
-- Filebeat collects log files and events, and Metricbeat collects server metrics such as CPU or memory.
+- Filebeat detects changes to the file system and collects log files and events, ie 'Apache logs'.
+- Metricbeat detects changes in system metrics such as CPU or memory then shows the docker performance data in either Logstash or Elasticsearch.
 
 ### Using the Playbook
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
 
 SSH into the control node and follow the steps below:
-- Copy the playbook (.yml) file to the ansible directory.
+- Copy the playbook(.yml) file to the ansible directory.
 - Update the host file to include Webservers and ELK
 - Run the playbook, and navigate to the kibana page 'http://[Your Public Ip]:5601/app/kibana' to check that the installation worked as expected.
 
-_TODO: Answer the following questions to fill in the blanks:_
-- _Which file is the playbook? Where do you copy it?_ install-elk.yml is copied to /etc/ansible
-- _Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on?_ You modify the ansible.cfg, install-elk.yml, and hosts as directed 
-- _Which URL do you navigate to in order to check that the ELK server is running? 'http://[Your Public Ip]:5601/app/kibana'
+- Which file is the playbook? Where do you copy it? install-elk.yml is copied to '/etc/ansible'
+- Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on? You modify the ansible.cfg, install-elk.yml, and hosts as directed. 
+- Which URL do you navigate to in order to check that the ELK server is running? 'http://[YourPublicIp]:5601/app/kibana'
 
 _As a **Bonus**, provide the specific commands the user will need to run to download the playbook, update the files, etc._
